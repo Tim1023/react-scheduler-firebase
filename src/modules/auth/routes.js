@@ -9,6 +9,7 @@ export default [
   {
     path: '/login',
     exact: true,
+    auth: false,
     component: Loadable({
       loader: () => import('./pages/login'),
       loading: LoadingComponent,
@@ -17,6 +18,7 @@ export default [
   {
     path: '/register',
     exact: true,
+    auth: false,
     component: Loadable({
       loader: () => import('./pages/register'),
       loading: LoadingComponent,

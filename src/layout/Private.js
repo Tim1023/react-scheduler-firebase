@@ -8,6 +8,8 @@ import topbarLogout from '../components/navigation/topbarLogout'
 
 const propTypes = {
   children: PropTypes.node.isRequired,
+  authed: PropTypes.bool.isRequired,
+
 }
 
 function PrivateLayout({ children }) {

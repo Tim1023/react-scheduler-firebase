@@ -1,12 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Route, Redirect } from 'react-router-dom'
-// import Main from '../Main'
 
 const PrivateRoute = ({component: Component, authed, ...rest}) => {
-  return <Route
-    {...rest}
-    render={props =>
+  console.log(authed)
+  return <Route {...rest} render={props =>
       authed === true ? (
         <Component {...props} />
       ) : (

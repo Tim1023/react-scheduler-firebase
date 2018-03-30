@@ -13,5 +13,6 @@ const config = {
 
 firebase.initializeApp(config);
 
+export const storageKey = 'KEY_FOR_LOCAL_STORAGE';
 export const db = firebase.firestore();
 export const firebaseAuth = firebase.auth;

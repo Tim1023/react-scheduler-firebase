@@ -1,4 +1,5 @@
-import { db, firebaseAuth } from '../config/constants';
+import { db, firebaseAuth, storageKey } from '../config/constants';
+
 
 export function auth(email, pw) {
   return firebaseAuth()
@@ -7,10 +8,12 @@ export function auth(email, pw) {
 }
 
 export function logout() {
+  localStorage.removeItem(storageKey);
   return firebaseAuth().signOut();
 }
 
 export function login(email, pw) {
+  localStorage.setItem(storageKey, email);
   return firebaseAuth().signInWithEmailAndPassword(email, pw);
 }
 
@@ -30,3 +33,4 @@ export function saveUser(user) {
       console.error('Error adding document: ', error);
     });
 }
+
