@@ -1,17 +1,19 @@
-import React, { Component } from 'react';
+import React from 'react';
 // import context
 import { ProfilerConsumer } from '../../../../context/profileContext'
 
-export default class Dashboard extends Component {
-  render() {
-    return   <ProfilerConsumer>
+function Dashboard() {
+  return (
+    <ProfilerConsumer>
       {context => {
         return (
           <div>
-            <strong>{context.email}</strong>
+            <strong>Scheduler: {context.email}</strong>
           </div>
         )
       }}
     </ProfilerConsumer>
-  }
+  )
 }
+
+export default (Dashboard);

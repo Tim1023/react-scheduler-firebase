@@ -35,6 +35,9 @@ class Routes extends Component {
       } else {
         this.setState({
           authed: false,
+          user: {
+            email: null
+          }
         });
       }
     });
@@ -45,12 +48,12 @@ class Routes extends Component {
   }
 
   render() {
-    return <Router hisotry={history}>
-      <ProfileProvider value={this.state.user}>
+
+    return <ProfileProvider value={this.state.user}>
+      <Router hisotry={history}>
         <Layout authed={this.state.authed}>
           <Switch>
             {routes.map((route, i) => {
-
               if (route.auth) {
                 return <PrivateRoute authed={this.state.authed} key={i} {...route} />
               }
@@ -58,8 +61,9 @@ class Routes extends Component {
             })}
           </Switch>
         </Layout>
-      </ProfileProvider>
-    </Router>
+      </Router>
+    </ProfileProvider>
+
   }
 }
 
