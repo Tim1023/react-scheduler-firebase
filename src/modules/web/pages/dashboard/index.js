@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
+// import context
+import { ProfilerConsumer } from '../../../../context/profileContext'
 
 export default class Dashboard extends Component {
   render() {
-    return (
-      <div>
-        Dashboard. This is a protected route. You can only see this if you're
-        authed.
-      </div>
-    );
+    return   <ProfilerConsumer>
+      {context => {
+        return (
+          <div>
+            <strong>{context.email}</strong>
+          </div>
+        )
+      }}
+    </ProfilerConsumer>
   }
 }

@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Switch } from 'react-router-dom'
 import createBrowserHistory from 'history/createBrowserHistory'
 // import services actions
 import { firebaseAuth, storageKey } from '../config/constants';
+// import context
+import { ProfileProvider } from '../context/profileContext'
 // import components
 import routes from './routes'
 import PrivateRoute from './Private'
@@ -16,6 +18,9 @@ const history = createBrowserHistory()
 class Routes extends Component {
   state = {
     authed: !!localStorage[storageKey],
+    user: {
+      email: null,
+    }
   };
 
   componentDidMount() {
@@ -23,6 +28,9 @@ class Routes extends Component {
       if (user) {
         this.setState({
           authed: true,
+          user: {
+            email: user.email
+          }
         });
       } else {
         this.setState({
@@ -35,19 +43,22 @@ class Routes extends Component {
   componentWillUnmount() {
     this.removeListener();
   }
+
   render() {
     return <Router hisotry={history}>
-      <Layout authed={this.state.authed} >
-        <Switch>
-          {routes.map((route, i) => {
+      <ProfileProvider value={this.state.user}>
+        <Layout authed={this.state.authed}>
+          <Switch>
+            {routes.map((route, i) => {
 
-            if (route.auth) {
-              return <PrivateRoute authed={this.state.authed} key={i} {...route} />
-            }
-            return <PublicRoute routeAuth={route.auth} authed={this.state.authed} key={i} {...route} />
-          })}
-        </Switch>
-      </Layout>
+              if (route.auth) {
+                return <PrivateRoute authed={this.state.authed} key={i} {...route} />
+              }
+              return <PublicRoute routeAuth={route.auth} authed={this.state.authed} key={i} {...route} />
+            })}
+          </Switch>
+        </Layout>
+      </ProfileProvider>
     </Router>
   }
 }
