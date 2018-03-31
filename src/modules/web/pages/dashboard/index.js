@@ -1,6 +1,8 @@
 import React from 'react';
 // import context
 import { ProfilerConsumer } from '../../../../context/profileContext'
+// import components
+import Calender from './Calender'
 
 function Dashboard() {
   return (
@@ -9,6 +11,7 @@ function Dashboard() {
         return (
           <div>
             <strong>Scheduler: {context.email}</strong>
+            <Calender/>
           </div>
         )
       }}
