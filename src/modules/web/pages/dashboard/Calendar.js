@@ -6,8 +6,8 @@ import BigCalendar from 'react-big-calendar'
 import moment from 'moment';
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 
-import 'react-big-calendar/lib/css/react-big-calendar.css'
-import 'react-big-calendar/lib/addons/dragAndDrop/styles.less'
+import './styles/css/react-big-calendar.css'
+import './styles/dnd/styles.less'
 
 
 BigCalendar.momentLocalizer(moment); // or globalizeLocalizer
@@ -24,11 +24,11 @@ class Dnd extends React.Component {
     this.moveEvent = this.moveEvent.bind(this)
   }
 
-  moveEvent({ event, start, end }) {
-    const { events } = this.state
+  moveEvent({event, start, end}) {
+    const {events} = this.state
 
     const idx = events.indexOf(event)
-    const updatedEvent = { ...event, start, end }
+    const updatedEvent = {...event, start, end}
 
     const nextEvents = [...events]
     nextEvents.splice(idx, 1, updatedEvent)
@@ -40,12 +40,12 @@ class Dnd extends React.Component {
     alert(`${event.title} was dropped onto ${event.start}`)
   }
 
-  resizeEvent = (resizeType, { event, start, end }) => {
-    const { events } = this.state
+  resizeEvent = (resizeType, {event, start, end}) => {
+    const {events} = this.state
 
     const nextEvents = events.map(existingEvent => {
       return existingEvent.id === event.id
-        ? { ...existingEvent, start, end }
+        ? {...existingEvent, start, end}
         : existingEvent
     })
 
@@ -56,15 +56,17 @@ class Dnd extends React.Component {
 
   render() {
     return (
-      <DragAndDropCalendar
-        selectable
-        events={this.state.events}
-        onEventDrop={this.moveEvent}
-        resizable
-        onEventResize={this.resizeEvent}
-        defaultView="week"
-        defaultDate={new Date(2015, 3, 12)}
-      />
+      <div style={{height:500,width:600}}>
+        <DragAndDropCalendar
+          selectable
+          events={this.state.events}
+          onEventDrop={this.moveEvent}
+          resizable
+          onEventResize={this.resizeEvent}
+          defaultView="week"
+          defaultDate={new Date(2015, 3, 12)}
+        />
+      </div>
     )
   }
 }
