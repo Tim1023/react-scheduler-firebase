@@ -3,11 +3,12 @@ import events from './events'
 import HTML5Backend from 'react-dnd-html5-backend'
 import { DragDropContext } from 'react-dnd'
 import BigCalendar from 'react-big-calendar'
-import moment from 'moment';
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
+import moment from 'moment';
 
+import './styles/dragAndDrop/styles.css'
+import './styles/less/styles.css'
 import './styles/css/react-big-calendar.css'
-import './styles/dnd/styles.less'
 
 
 BigCalendar.momentLocalizer(moment); // or globalizeLocalizer
@@ -25,6 +26,7 @@ class Dnd extends React.Component {
   }
 
   moveEvent({event, start, end}) {
+
     const {events} = this.state
 
     const idx = events.indexOf(event)
