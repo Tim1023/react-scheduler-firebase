@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch } from 'react-router-dom'
 import createBrowserHistory from 'history/createBrowserHistory'
 // import services actions
 import { firebaseAuth, storageKey } from '../config/constants';
+import { GetEvents } from "../helpers/db";
 // import context
 import { ProfileProvider } from '../context/profileContext'
 // import components
@@ -20,23 +21,35 @@ class Routes extends Component {
     authed: !!localStorage[storageKey],
     user: {
       email: null,
-    }
+      uid: null,
+    },
+    events:[],
   };
 
   componentDidMount() {
+    const newEvents =[];
     this.removeListener = firebaseAuth().onAuthStateChanged(user => {
       if (user) {
+        GetEvents(user.uid).then(function (querySnapshot) {
+          querySnapshot.forEach(function (doc) {
+            newEvents.push(doc.data())
+          });
+          console.log(newEvents)
+        })
         this.setState({
           authed: true,
           user: {
-            email: user.email
-          }
+            email: user.email,
+            uid: user.uid,
+          },
+          events:newEvents,
         });
       } else {
         this.setState({
           authed: false,
           user: {
-            email: null
+            email: null,
+            uid: null,
           }
         });
       }
