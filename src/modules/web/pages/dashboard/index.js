@@ -10,13 +10,14 @@ class Dashboard extends Component {
     return (
       <ProfilerConsumer>
         {context => {
-
-          return (
-            <div>
-              <strong>Scheduler: {context.email}</strong>
-              <Calendar uid={context.uid} />
-            </div>
-          )
+          if (context.email) {
+            return (
+              <div>
+                <strong>Scheduler: {context.email}</strong>
+                <Calendar uid={context.uid} />
+              </div>
+            )
+          }
         }}
       </ProfilerConsumer>
     )

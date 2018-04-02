@@ -10,6 +10,7 @@ import uuidV4 from 'uuid/v4'
 import './styles/dragAndDrop/styles.css'
 import './styles/less/styles.css'
 import './styles/css/react-big-calendar.css'
+import { GetEvents } from "../../../../helpers/db";
 
 
 BigCalendar.momentLocalizer(moment); // or globalizeLocalizer
@@ -17,15 +18,29 @@ BigCalendar.momentLocalizer(moment); // or globalizeLocalizer
 const DragAndDropCalendar = withDragAndDrop(BigCalendar)
 
 class Dnd extends Component {
-  state = {
-    events: []
-  };
 
 
   constructor(props) {
     super(props)
 
+    this.state = {
+      events: []
+    }
+
     this.moveEvent = this.moveEvent.bind(this)
+  }
+
+  componentDidMount() {
+    const newEvents = []
+
+    GetEvents(this.props.uid).then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        newEvents.push(doc.data())
+        this.setState({
+          events: newEvents,
+        })
+      });
+    })
   }
 
   moveEvent({event, start, end}) {
@@ -61,20 +76,23 @@ class Dnd extends Component {
 
 
   render() {
+    if (this.state.events) {
+      return (
+        <div style={{height: 500, width: 600}}>
 
-    return (
-      <div style={{height: 500, width: 600}}>
-        <DragAndDropCalendar
-          selectable
-          events={this.state.events}
-          onEventDrop={this.moveEvent}
-          resizable
-          onEventResize={this.resizeEvent}
-          defaultView="week"
-          defaultDate={new Date()}
-        />
-      </div>
-    )
+          <DragAndDropCalendar
+            selectable
+            events={this.state.events}
+            onEventDrop={this.moveEvent}
+            resizable
+            onEventResize={this.resizeEvent}
+            defaultView="week"
+            defaultDate={new Date()}
+          />
+        </div>
+      )
+    }
+
   }
 }
 

@@ -22,27 +22,18 @@ class Routes extends Component {
     user: {
       email: null,
       uid: null,
-    },
-    events:[],
+    }
   };
 
   componentDidMount() {
-    const newEvents =[];
     this.removeListener = firebaseAuth().onAuthStateChanged(user => {
       if (user) {
-        GetEvents(user.uid).then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
-            newEvents.push(doc.data())
-          });
-          console.log(newEvents)
-        })
         this.setState({
           authed: true,
           user: {
             email: user.email,
             uid: user.uid,
           },
-          events:newEvents,
         });
       } else {
         this.setState({
@@ -61,7 +52,6 @@ class Routes extends Component {
   }
 
   render() {
-
     return <ProfileProvider value={this.state.user}>
       <Router hisotry={history}>
         <Layout authed={this.state.authed}>
