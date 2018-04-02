@@ -94,7 +94,7 @@ class Dnd extends Component {
     });
   }
 
-  editEvent = ({id,title,desc}) => {
+  editEvent = ({id, title, desc}) => {
     const {events} = this.state
 
     const nextEvents = events.map(existingEvent => {
@@ -111,7 +111,21 @@ class Dnd extends Component {
       console.error('Update error', error);
     });
   }
+  deleteEvent = ({id}) => {
+    const {events} = this.state
 
+    const nextEvents = events.filter(existingEvent => {
+      return existingEvent.id !== id
+    })
+
+    UpdateEvents(id).delete().then(
+      this.setState({
+        events: nextEvents,
+      })
+    ).catch(error => {
+      console.error('Delete error', error);
+    });
+  }
   handleClose = () => {
     this.setState({
       modalOpen: false,
@@ -154,7 +168,9 @@ class Dnd extends Component {
           >
             <Modal event={this.state.modal}
                    onRequestClose={this.handleClose}
-                   onEditEvent ={this.editEvent}
+                   onEditEvent={this.editEvent}
+                   onDeleteEvent={this.deleteEvent}
+
             />
           </Dialog>
         </div>
