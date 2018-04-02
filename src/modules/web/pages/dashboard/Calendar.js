@@ -94,6 +94,24 @@ class Dnd extends Component {
     });
   }
 
+  editEvent = ({id,title,desc}) => {
+    const {events} = this.state
+
+    const nextEvents = events.map(existingEvent => {
+      return existingEvent.id === id
+        ? {...existingEvent, title, desc}
+        : existingEvent
+    })
+
+    UpdateEvents(id).update({title, desc}).then(
+      this.setState({
+        events: nextEvents,
+      })
+    ).catch(error => {
+      console.error('Update error', error);
+    });
+  }
+
   handleClose = () => {
     this.setState({
       modalOpen: false,
@@ -109,7 +127,7 @@ class Dnd extends Component {
   handleOpen = (event) => {
     this.setState({
       modalOpen: true,
-      modal:event,
+      modal: event,
     });
   };
 
@@ -128,11 +146,16 @@ class Dnd extends Component {
             defaultDate={new Date()}
             onSelectEvent={this.selectEvent}
           />
-          <Dialog title="Dialog With Date Picker"
+          <Dialog title="Task"
                   modal={false}
                   open={this.state.modalOpen}
-                  onRequestClose={this.handleClose}>
-            <Modal event={this.state.modal} />
+                  onRequestClose={this.handleClose}
+                  autoScrollBodyContent={true}
+          >
+            <Modal event={this.state.modal}
+                   onRequestClose={this.handleClose}
+                   onEditEvent ={this.editEvent}
+            />
           </Dialog>
         </div>
       )
