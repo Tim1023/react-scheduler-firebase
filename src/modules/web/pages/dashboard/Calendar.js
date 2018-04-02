@@ -12,6 +12,8 @@ import './styles/less/styles.css'
 import './styles/css/react-big-calendar.css'
 import { GetEvents, UpdateEvents } from "../../../../helpers/db";
 
+import Dialog from 'material-ui/Dialog';
+import Modal from "./Modal";
 
 BigCalendar.momentLocalizer(moment); // or globalizeLocalizer
 
@@ -23,7 +25,15 @@ class Dnd extends Component {
     super(props)
 
     this.state = {
-      events: []
+      events: [],
+      modal: {
+        id: null,
+        title: null,
+        desc: null,
+        start: new Date(),
+        end: new Date(),
+      },
+      modalOpen: false,
     }
 
     this.moveEvent = this.moveEvent.bind(this)
@@ -53,15 +63,17 @@ class Dnd extends Component {
 
     nextEvents.splice(idx, 1, updatedEvent)
 
-    UpdateEvents(event.uuid).update({start,end}).then(
+    UpdateEvents(event.id).update({start, end}).then(
       this.setState({
         events: nextEvents,
       })
     ).catch(error => {
       console.error('Update error', error);
     });
+  }
 
-
+  selectEvent = (event) => {
+    this.handleOpen(event)
   }
 
   resizeEvent = (resizeType, {event, start, end}) => {
@@ -73,7 +85,7 @@ class Dnd extends Component {
         : existingEvent
     })
 
-    UpdateEvents(event.uuid).update({start,end}).then(
+    UpdateEvents(event.id).update({start, end}).then(
       this.setState({
         events: nextEvents,
       })
@@ -82,21 +94,46 @@ class Dnd extends Component {
     });
   }
 
+  handleClose = () => {
+    this.setState({
+      modalOpen: false,
+      modal: {
+        id: null,
+        title: null,
+        desc: null,
+        start: new Date(),
+        end: new Date(),
+      },
+    });
+  };
+  handleOpen = (event) => {
+    this.setState({
+      modalOpen: true,
+      modal:event,
+    });
+  };
 
   render() {
+
     if (this.state.events) {
       return (
         <div style={{height: 500, width: 600}}>
-
           <DragAndDropCalendar
-            selectable
+
             events={this.state.events}
             onEventDrop={this.moveEvent}
             resizable
             onEventResize={this.resizeEvent}
             defaultView="week"
             defaultDate={new Date()}
+            onSelectEvent={this.selectEvent}
           />
+          <Dialog title="Dialog With Date Picker"
+                  modal={false}
+                  open={this.state.modalOpen}
+                  onRequestClose={this.handleClose}>
+            <Modal event={this.state.modal} />
+          </Dialog>
         </div>
       )
     }

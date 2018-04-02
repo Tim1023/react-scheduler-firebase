@@ -4,6 +4,6 @@ export function GetEvents(uid) {
   return db.collection('events').where('ownerId','==',uid).get();
 }
 
-export function UpdateEvents(uuid) {
-  return db.collection('events').doc(uuid)
+export function UpdateEvents(id) {
+  return db.collection('events').doc(id)
 }
