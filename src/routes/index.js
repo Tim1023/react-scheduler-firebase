@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Switch } from 'react-router-dom'
 import createBrowserHistory from 'history/createBrowserHistory'
 // import services actions
 import { firebaseAuth, storageKey } from '../config/constants';
-import { GetEvents } from "../helpers/db";
 // import context
 import { ProfileProvider } from '../context/profileContext'
 // import components

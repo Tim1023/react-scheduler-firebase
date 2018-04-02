@@ -10,7 +10,7 @@ import uuidV4 from 'uuid/v4'
 import './styles/dragAndDrop/styles.css'
 import './styles/less/styles.css'
 import './styles/css/react-big-calendar.css'
-import { GetEvents } from "../../../../helpers/db";
+import { GetEvents, UpdateEvents } from "../../../../helpers/db";
 
 
 BigCalendar.momentLocalizer(moment); // or globalizeLocalizer
@@ -18,7 +18,6 @@ BigCalendar.momentLocalizer(moment); // or globalizeLocalizer
 const DragAndDropCalendar = withDragAndDrop(BigCalendar)
 
 class Dnd extends Component {
-
 
   constructor(props) {
     super(props)
@@ -51,13 +50,18 @@ class Dnd extends Component {
     const updatedEvent = {...event, start, end}
 
     const nextEvents = [...events]
+
     nextEvents.splice(idx, 1, updatedEvent)
 
-    this.setState({
-      events: nextEvents,
-    })
+    UpdateEvents(event.uuid).update({start,end}).then(
+      this.setState({
+        events: nextEvents,
+      })
+    ).catch(error => {
+      console.error('Update error', error);
+    });
 
-    alert(`${event.title} was dropped onto ${event.start}`)
+
   }
 
   resizeEvent = (resizeType, {event, start, end}) => {
@@ -69,9 +73,13 @@ class Dnd extends Component {
         : existingEvent
     })
 
-    this.setState({
-      events: nextEvents,
-    })
+    UpdateEvents(event.uuid).update({start,end}).then(
+      this.setState({
+        events: nextEvents,
+      })
+    ).catch(error => {
+      console.error('Update error', error);
+    });
   }
 
 
