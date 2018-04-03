@@ -15,7 +15,8 @@ export default class Modal extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
     this.state.onRequestClose()
-    this.state.onEditEvent(this.state.event)
+    this.props.event.title ? this.state.onEditEvent(this.state.event) :
+      this.state.onCreatEvent(this.state.event)
   }
 
   handleDelete = e => {
@@ -34,6 +35,7 @@ export default class Modal extends React.Component {
         onSubmit={e => this.handleSubmit(e)}
       >
         <RaisedButton
+          className={this.props.event.title ? '' : 'd-none'}
           label="Delete"
           type="button"
           secondary={true}
@@ -54,8 +56,14 @@ export default class Modal extends React.Component {
         </div>
         <div>
           <RaisedButton
-            className={'mr-3 my-3'}
-            label="Submit"
+            className={this.props.event.title ? ' mr-3 my-3' : 'd-none mr-3 my-3'}
+            label="Update"
+            primary={true}
+            type="submit"
+          />
+          <RaisedButton
+            className={this.props.event.title ? 'd-none mr-3 my-3' : 'mr-3 my-3'}
+            label="Create"
             primary={true}
             type="submit"
           />

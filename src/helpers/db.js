@@ -9,3 +9,6 @@ export function GetEquipments(uid) {
 export function UpdateEvents(id) {
   return db.collection('events').doc(id)
 }
+export function UpdateEquipments(id) {
+  return db.collection('equipments').doc(id)
+}

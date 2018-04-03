@@ -1,20 +1,22 @@
 import React, { Component } from 'react';
-// import events from './events'
 import HTML5Backend from 'react-dnd-html5-backend'
 import { DragDropContext } from 'react-dnd'
 import BigCalendar from 'react-big-calendar'
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import moment from 'moment'
 import uuidV4 from 'uuid/v4'
-
+import Dialog from 'material-ui/Dialog';
+import Modal from './Modal';
+import Sidebar from './Sidebar'
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+//Actions
+import { GetEvents, UpdateEvents, GetEquipments, UpdateEquipments } from "../../../../helpers/db";
+//Styles
 import './styles/dragAndDrop/styles.css'
 import './styles/less/styles.css'
 import './styles/css/react-big-calendar.css'
-import { GetEvents, UpdateEvents, GetEquipments } from "../../../../helpers/db";
 
-import Dialog from 'material-ui/Dialog';
-import Modal from "./Modal";
-import Sidebar from './Sidebar'
 
 BigCalendar.momentLocalizer(moment); // or globalizeLocalizer
 
@@ -32,10 +34,13 @@ class Dnd extends Component {
         id: null,
         title: null,
         desc: null,
-        start: new Date(),
-        end: new Date(),
+        start: new Date(2018, 4, 4, 7, 0, 0),
+        end: new Date(2018, 4, 4, 8, 0, 0),
       },
       modalOpen: false,
+      equipmentsOpen: false,
+      peopleOpen: false,
+
     }
 
     this.moveEvent = this.moveEvent.bind(this)
@@ -61,7 +66,6 @@ class Dnd extends Component {
         })
       });
     })
-
   }
 
   moveEvent({event, start, end}) {
@@ -81,7 +85,7 @@ class Dnd extends Component {
     }
     else {
       const newEventId = uuidV4()
-      updatedEvent = {...updatedEvent,id:newEventId,ownerId:this.props.uid}
+      updatedEvent = {...updatedEvent, id: newEventId, ownerId: this.props.uid}
       console.log(updatedEvent)
       nextEvents.push(updatedEvent)
       UpdateEvents(newEventId).set(updatedEvent).then(
@@ -91,10 +95,7 @@ class Dnd extends Component {
       ).catch(error => {
         console.error('Create New Event error', error);
       });
-
     }
-
-
   }
 
   selectEvent = (event) => {
@@ -118,7 +119,20 @@ class Dnd extends Component {
       console.error('Update error', error);
     });
   }
-
+  createEquipment = ({title, desc}) => {
+    const {equipments} = this.state
+    const newEquipmentId = uuidV4()
+    const updatedEquipment = {...this.state.modal, id: newEquipmentId, ownerId: this.props.uid, title, desc}
+    const nextEquipments = [...equipments]
+    nextEquipments.push(updatedEquipment)
+    UpdateEquipments(newEquipmentId).set(updatedEquipment).then(
+      this.setState({
+        equipments: nextEquipments,
+      })
+    ).catch(error => {
+      console.error('Create New Equipment error', error);
+    });
+  }
   editEvent = ({id, title, desc}) => {
     const {events} = this.state
 
@@ -133,7 +147,23 @@ class Dnd extends Component {
         events: nextEvents,
       })
     ).catch(error => {
-      console.error('Update error', error);
+      console.error('Update Event error', error);
+    });
+  }
+  editEquipment = ({id, title, desc}) => {
+    const {equipments} = this.state
+
+    const nextEquipments = equipments.map(existingEquipment => {
+      return existingEquipment.id === id
+        ? {...existingEquipment, title, desc}
+        : existingEquipment
+    })
+    UpdateEquipments(id).update({title, desc}).then(
+      this.setState({
+        equipments: nextEquipments,
+      })
+    ).catch(error => {
+      console.error('Update Equipment error', error);
     });
   }
   deleteEvent = ({id}) => {
@@ -148,18 +178,34 @@ class Dnd extends Component {
         events: nextEvents,
       })
     ).catch(error => {
+      console.error('Delete Event error', error);
+    });
+  }
+  deleteEquipment = ({id}) => {
+    const {equipments} = this.state
+
+    const nextEquipments = equipments.filter(existingEquipment => {
+      return existingEquipment.id !== id
+    })
+
+    UpdateEvents(id).delete().then(
+      this.setState({
+        equipments: nextEquipments,
+      })
+    ).catch(error => {
       console.error('Delete error', error);
     });
   }
   handleClose = () => {
     this.setState({
       modalOpen: false,
+      equipmentsOpen: false,
       modal: {
         id: null,
         title: null,
         desc: null,
-        start: new Date(),
-        end: new Date(),
+        start: new Date(2018, 4, 4, 7, 0, 0),
+        end: new Date(2018, 4, 4, 8, 0, 0),
       },
     });
   };
@@ -169,11 +215,11 @@ class Dnd extends Component {
       modal: event,
     });
   };
-  loadEquipments = () => {
-    return this.state.equipments.map(event => <Sidebar
-      event={event}
-      key={event.id}
-    />)
+  handleEquipments = (event) => {
+    this.setState({
+      modal: event ? event : this.state.modal,
+      equipmentsOpen: true
+    });
   }
 
   render() {
@@ -183,7 +229,16 @@ class Dnd extends Component {
         <div className={'row'}>
           <div className={'col-2'}>
             Equipments:
-            {this.state.equipments ? this.loadEquipments() : null}
+            <FloatingActionButton
+              mini={true}
+              className={'m-2'}
+              onClick={()=>this.handleEquipments()}
+            >
+              <ContentAdd />
+            </FloatingActionButton>
+            <Sidebar events={this.state.equipments}
+                     onClickEvent={this.handleEquipments}
+            />
           </div>
           <div style={{height: 500}} className={'col-8'}>
 
@@ -209,6 +264,19 @@ class Dnd extends Component {
                      onEditEvent={this.editEvent}
                      onDeleteEvent={this.deleteEvent}
 
+              />
+            </Dialog>
+            <Dialog title="Equipments"
+                    modal={false}
+                    open={this.state.equipmentsOpen}
+                    onRequestClose={this.handleClose}
+                    autoScrollBodyContent={true}
+            >
+              <Modal event={this.state.modal}
+                     onRequestClose={this.handleClose}
+                     onCreatEvent={this.createEquipment}
+                     onEditEvent={this.editEquipment}
+                     onDeleteEvent={this.deleteEquipment}
               />
             </Dialog>
           </div>

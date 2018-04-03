@@ -1,55 +1,24 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react'
-import { DragSource } from 'react-dnd';
-import BigCalendar from 'react-big-calendar'
-import Chip from 'material-ui/Chip';
+import React from 'react';
+import EventChip from './EventChip'
 
 
-/* drag sources */
-let eventSource = {
-  beginDrag(props) {
-    return Object.assign({},
-      {event: props.event},
-
-      {anchor: 'drop'}
-    )
-  }
-}
-
-function collectSource(connect, monitor) {
-  return {
-    connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging()
-  };
-}
-
-const propTypes = {
-  connectDragSource: PropTypes.func.isRequired,
-  isDragging: PropTypes.bool.isRequired,
-  event: PropTypes.object.isRequired
-}
-
-class DraggableSidebarEvent extends Component {
-
+export default class Sidebar extends React.Component {
 
   render() {
-    let {connectDragSource, isDragging, event} = this.props;
-    let EventWrapper = BigCalendar.components.eventWrapper;
-    let {title} = event;
 
+    const eventList = !!this.props.events ? this.props.events.map((event) => {
+      return (<EventChip
+          event={event}
+          key={event.id}
+          onClickEvent={this.props.onClickEvent}
+        />
+      )
+    }) : null
 
     return (
-      <EventWrapper event={event}>
-        {connectDragSource(<div style={{opacity: isDragging ? 0.5 : 1}}>
-          <Chip>{title}</Chip>
-        </div>)}
-      </EventWrapper>
-
+      <div>
+        {eventList}
+      </div>
     );
   }
 }
-
-DraggableSidebarEvent.propTypes = propTypes;
-
-
-export default DragSource('event', eventSource, collectSource)(DraggableSidebarEvent);
