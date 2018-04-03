@@ -82,7 +82,7 @@ class Dnd extends Component {
       querySnapshot.forEach(doc => {
         newPeople.push(doc.data())
         this.setState({
-          people: newEquipments,
+          people: newPeople,
         })
       });
     })
@@ -295,7 +295,6 @@ class Dnd extends Component {
   }
 
   render() {
-
     if (this.state.events) {
       return (
         <div className={'row'}>
