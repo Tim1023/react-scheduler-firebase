@@ -7,12 +7,11 @@ import BigCalendar from 'react-big-calendar'
 /* drag sources */
 let eventSource = {
   beginDrag(props) {
-    return props.event;
-  },
-  endDrag(props,monitor,component) {
+    return Object.assign({},
+      {event: props.event},
 
-    props.onEventDrop(props.event)
-    console.log(monitor.didDrop())
+      {anchor: 'drop'}
+    )
   }
 }
 

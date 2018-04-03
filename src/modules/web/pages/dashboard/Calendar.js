@@ -18,7 +18,7 @@ import Sidebar from './Sidebar'
 
 BigCalendar.momentLocalizer(moment); // or globalizeLocalizer
 
-const DragAndDropCalendar = withDragAndDrop(BigCalendar,{ backend: false })
+const DragAndDropCalendar = withDragAndDrop(BigCalendar, {backend: false})
 
 class Dnd extends Component {
 
@@ -52,26 +52,27 @@ class Dnd extends Component {
       });
     })
   }
-  addEvent(event,start,end) {
-    console.log(event)
-  }
+
   moveEvent({event, start, end}) {
     const {events} = this.state
-
     const idx = events.indexOf(event)
     const updatedEvent = {...event, start, end}
-
     const nextEvents = [...events]
+    if (idx > -1) {
+      nextEvents.splice(idx, 1, updatedEvent)
+    }
+    else {
+      nextEvents.push(updatedEvent)
 
-    nextEvents.splice(idx, 1, updatedEvent)
+    }
 
-    UpdateEvents(event.id).update({start, end}).then(
-      this.setState({
-        events: nextEvents,
-      })
-    ).catch(error => {
-      console.error('Update error', error);
-    });
+    // UpdateEvents(event.id).update({start, end}).then(
+    this.setState({
+      events: nextEvents,
+    })
+    // ).catch(error => {
+    //   console.error('Update error', error);
+    // });
   }
 
   selectEvent = (event) => {
@@ -154,9 +155,8 @@ class Dnd extends Component {
 
         <div style={{height: 500, width: 600}}>
           <Sidebar
-            event={{title:'test',id:'123',start:new Date(), end: new Date()}}
+            event={{title: 'test', id: '123', start: new Date(2018, 4, 4, 1, 0, 0), end: new Date(2018, 4, 4, 2, 0, 0)}}
             key={'123'}
-            onEventDrop={this.addEvent}
           />
 
           <DragAndDropCalendar
