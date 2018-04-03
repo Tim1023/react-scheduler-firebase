@@ -5,7 +5,7 @@ import BigCalendar from 'react-big-calendar'
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import moment from 'moment'
 import uuidV4 from 'uuid/v4'
-import { minTime, maxTime } from '../../../../config/constants';
+import { minTime, maxTime, calendarInitialState } from '../../../../config/constants';
 
 import Dialog from 'material-ui/Dialog';
 import Modal from './Modal';
@@ -37,22 +37,7 @@ class Dnd extends Component {
   constructor(props) {
     super(props)
 
-    this.state = {
-      events: [],
-      equipments: [],
-      people: [],
-      modal: {
-        id: null,
-        title: null,
-        desc: null,
-        start: new Date(2018, 4, 4, 7, 0, 0),
-        end: new Date(2018, 4, 4, 8, 0, 0),
-      },
-      modalOpen: false,
-      equipmentsOpen: false,
-      peopleOpen: false,
-
-    }
+    this.state = calendarInitialState
 
     this.moveEvent = this.moveEvent.bind(this)
   }
