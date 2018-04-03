@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import HTML5Backend from 'react-dnd-html5-backend'
 import { DragDropContext } from 'react-dnd'
-import BigCalendar from 'react-big-calendar'
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import moment from 'moment'
 import uuidV4 from 'uuid/v4'
-import { minTime, maxTime, calendarInitialState } from '../../../../config/constants';
-
-import Dialog from 'material-ui/Dialog';
-import Modal from './Modal';
+import { minTime, maxTime, calendarInitialState } from '../../../../config/constants'
+//Compoments
+import BigCalendar from 'react-big-calendar'
+import Dialog from 'material-ui/Dialog'
+import Modal from './Modal'
 import Sidebar from './Sidebar'
 import Footer from './Footer'
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
+import FloatingActionButton from 'material-ui/FloatingActionButton'
+import ContentAdd from 'material-ui/svg-icons/content/add'
 //Actions
 import {
   GetEvents,
@@ -251,13 +251,7 @@ class Dnd extends Component {
       modalOpen: false,
       equipmentsOpen: false,
       peopleOpen: false,
-      modal: {
-        id: null,
-        title: null,
-        desc: null,
-        start: new Date(2018, 4, 4, 7, 0, 0),
-        end: new Date(2018, 4, 4, 8, 0, 0),
-      },
+      modal: calendarInitialState.modal,
     });
   };
   handleOpen = (event) => {
