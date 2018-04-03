@@ -16,3 +16,7 @@ firebase.initializeApp(config);
 export const storageKey = 'KEY_FOR_LOCAL_STORAGE';
 export const db = firebase.firestore();
 export const firebaseAuth = firebase.auth;
+export const minTime = new Date();
+minTime.setHours(7,0,0);
+export const maxTime = new Date();
+maxTime.setHours(20,0,0);

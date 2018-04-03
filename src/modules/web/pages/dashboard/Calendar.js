@@ -5,6 +5,8 @@ import BigCalendar from 'react-big-calendar'
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import moment from 'moment'
 import uuidV4 from 'uuid/v4'
+import { minTime, maxTime } from '../../../../config/constants';
+
 import Dialog from 'material-ui/Dialog';
 import Modal from './Modal';
 import Sidebar from './Sidebar'
@@ -321,7 +323,8 @@ class Dnd extends Component {
               defaultView="week"
               defaultDate={new Date()}
               onSelectEvent={this.selectEvent}
-
+              min={minTime}
+              max={maxTime}
             />
             <Dialog title="Task"
                     modal={false}
@@ -378,7 +381,7 @@ class Dnd extends Component {
                      onClickEvent={this.handlePeople}
             />
           </div>
-          <Footer selectedEvents={this.state.events}/>
+          <Footer selectedEvents={this.state.events} />
         </div>
       )
     }
