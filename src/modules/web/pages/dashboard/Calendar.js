@@ -14,10 +14,11 @@ import { GetEvents, UpdateEvents } from "../../../../helpers/db";
 
 import Dialog from 'material-ui/Dialog';
 import Modal from "./Modal";
+import Sidebar from './Sidebar'
 
 BigCalendar.momentLocalizer(moment); // or globalizeLocalizer
 
-const DragAndDropCalendar = withDragAndDrop(BigCalendar)
+const DragAndDropCalendar = withDragAndDrop(BigCalendar,{ backend: false })
 
 class Dnd extends Component {
 
@@ -51,9 +52,10 @@ class Dnd extends Component {
       });
     })
   }
-
+  addEvent(event,start,end) {
+    console.log(event)
+  }
   moveEvent({event, start, end}) {
-
     const {events} = this.state
 
     const idx = events.indexOf(event)
@@ -149,7 +151,14 @@ class Dnd extends Component {
 
     if (this.state.events) {
       return (
+
         <div style={{height: 500, width: 600}}>
+          <Sidebar
+            event={{title:'test',id:'123',start:new Date(), end: new Date()}}
+            key={'123'}
+            onEventDrop={this.addEvent}
+          />
+
           <DragAndDropCalendar
 
             events={this.state.events}
@@ -159,6 +168,7 @@ class Dnd extends Component {
             defaultView="week"
             defaultDate={new Date()}
             onSelectEvent={this.selectEvent}
+
           />
           <Dialog title="Task"
                   modal={false}
