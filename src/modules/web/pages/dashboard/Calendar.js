@@ -8,6 +8,7 @@ import uuidV4 from 'uuid/v4'
 import Dialog from 'material-ui/Dialog';
 import Modal from './Modal';
 import Sidebar from './Sidebar'
+import Footer from './Footer'
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 //Actions
@@ -377,6 +378,7 @@ class Dnd extends Component {
                      onClickEvent={this.handlePeople}
             />
           </div>
+          <Footer selectedEvents={this.state.events}/>
         </div>
       )
     }
