@@ -1,24 +1,26 @@
-import { db, firebaseAuth, storageKey } from '../config/constants';
+import { db, firebaseAuth, storageKey } from '../config/constants'
 
 
 export function auth(email, pw) {
   return firebaseAuth()
     .createUserWithEmailAndPassword(email, pw)
-    .then(saveUser);
+    .then(saveUser)
+    .then(localStorage.setItem(storageKey, email))
 }
 
 export function logout() {
-  localStorage.removeItem(storageKey);
-  return firebaseAuth().signOut();
+  localStorage.removeItem(storageKey)
+  return firebaseAuth().signOut()
 }
 
 export function login(email, pw) {
-  localStorage.setItem(storageKey, email);
-  return firebaseAuth().signInWithEmailAndPassword(email, pw);
+  return firebaseAuth()
+    .signInWithEmailAndPassword(email, pw)
+    .then(localStorage.setItem(storageKey, email))
 }
 
 export function resetPassword(email) {
-  return firebaseAuth().sendPasswordResetEmail(email);
+  return firebaseAuth().sendPasswordResetEmail(email)
 }
 
 export function saveUser(user) {
@@ -29,8 +31,8 @@ export function saveUser(user) {
       uid: user.uid
     })
     .then(docRef => docRef)
-    .catch(function(error) {
-      console.error('Error adding document: ', error);
-    });
+    .catch(function (error) {
+      console.error('Error adding document: ', error)
+    })
 }
 
