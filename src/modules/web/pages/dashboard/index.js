@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { ProfilerConsumer } from '../../../../context/profileContext'
 // import components
 import Calendar from './Calendar'
+
 class Dashboard extends Component {
 
   render() {
@@ -12,7 +13,7 @@ class Dashboard extends Component {
           if (context.email) {
             return (
               <div>
-                <strong>Scheduler: {context.email}</strong>
+                <div><strong>Scheduler: {context.email}</strong></div>
                 <Calendar uid={context.uid} />
               </div>
             )
