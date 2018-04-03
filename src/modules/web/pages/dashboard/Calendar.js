@@ -11,7 +11,14 @@ import Sidebar from './Sidebar'
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 //Actions
-import { GetEvents, UpdateEvents, GetEquipments, UpdateEquipments } from "../../../../helpers/db";
+import {
+  GetEvents,
+  UpdateEvents,
+  GetEquipments,
+  UpdateEquipments,
+  GetPeople,
+  UpdatePeople
+} from "../../../../helpers/db";
 //Styles
 import './styles/dragAndDrop/styles.css'
 import './styles/less/styles.css'
@@ -30,6 +37,7 @@ class Dnd extends Component {
     this.state = {
       events: [],
       equipments: [],
+      people: [],
       modal: {
         id: null,
         title: null,
@@ -49,6 +57,7 @@ class Dnd extends Component {
   componentDidMount() {
     const newEvents = []
     const newEquipments = []
+    const newPeople = []
 
     GetEvents(this.props.uid).then(querySnapshot => {
       querySnapshot.forEach(doc => {
@@ -63,6 +72,14 @@ class Dnd extends Component {
         newEquipments.push(doc.data())
         this.setState({
           equipments: newEquipments,
+        })
+      });
+    })
+    GetPeople(this.props.uid).then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        newPeople.push(doc.data())
+        this.setState({
+          people: newEquipments,
         })
       });
     })
@@ -133,6 +150,20 @@ class Dnd extends Component {
       console.error('Create New Equipment error', error);
     });
   }
+  createPeople = ({title, desc, phone}) => {
+    const {people} = this.state
+    const newPeopleId = uuidV4()
+    const updatedPeople = {...this.state.modal, id: newPeopleId, ownerId: this.props.uid, title, desc, phone}
+    const nextPeople = [...people]
+    nextPeople.push(updatedPeople)
+    UpdatePeople(newPeopleId).set(updatedPeople).then(
+      this.setState({
+        people: nextPeople,
+      })
+    ).catch(error => {
+      console.error('Create New People error', error);
+    });
+  }
   editEvent = ({id, title, desc}) => {
     const {events} = this.state
 
@@ -166,6 +197,22 @@ class Dnd extends Component {
       console.error('Update Equipment error', error);
     });
   }
+  editPeople = ({id, title, desc, phone}) => {
+    const {people} = this.state
+
+    const nextPeople = people.map(existingPeople => {
+      return existingPeople.id === id
+        ? {...existingPeople, title, desc}
+        : existingPeople
+    })
+    UpdatePeople(id).update({title, desc, phone}).then(
+      this.setState({
+        people: nextPeople,
+      })
+    ).catch(error => {
+      console.error('Update Equipment error', error);
+    });
+  }
   deleteEvent = ({id}) => {
     const {events} = this.state
 
@@ -188,9 +235,24 @@ class Dnd extends Component {
       return existingEquipment.id !== id
     })
 
-    UpdateEvents(id).delete().then(
+    UpdateEquipments(id).delete().then(
       this.setState({
         equipments: nextEquipments,
+      })
+    ).catch(error => {
+      console.error('Delete error', error);
+    });
+  }
+  deletePeople = ({id}) => {
+    const {people} = this.state
+
+    const nextPeople = people.filter(existingPeople => {
+      return existingPeople.id !== id
+    })
+
+    UpdatePeople(id).delete().then(
+      this.setState({
+        people: nextPeople,
       })
     ).catch(error => {
       console.error('Delete error', error);
@@ -200,6 +262,7 @@ class Dnd extends Component {
     this.setState({
       modalOpen: false,
       equipmentsOpen: false,
+      peopleOpen: false,
       modal: {
         id: null,
         title: null,
@@ -221,6 +284,12 @@ class Dnd extends Component {
       equipmentsOpen: true
     });
   }
+  handlePeople = (event) => {
+    this.setState({
+      modal: event ? event : {...this.state.modal, phone: null},
+      peopleOpen: true
+    });
+  }
 
   render() {
 
@@ -232,7 +301,7 @@ class Dnd extends Component {
             <FloatingActionButton
               mini={true}
               className={'m-2'}
-              onClick={()=>this.handleEquipments()}
+              onClick={() => this.handleEquipments()}
             >
               <ContentAdd />
             </FloatingActionButton>
@@ -279,9 +348,34 @@ class Dnd extends Component {
                      onDeleteEvent={this.deleteEquipment}
               />
             </Dialog>
+            <Dialog title="People"
+                    modal={false}
+                    open={this.state.peopleOpen}
+                    onRequestClose={this.handleClose}
+                    autoScrollBodyContent={true}
+            >
+              <Modal event={this.state.modal}
+                     onRequestClose={this.handleClose}
+                     onCreatEvent={this.createPeople}
+                     onEditEvent={this.editPeople}
+                     onDeleteEvent={this.deletePeople}
+              />
+            </Dialog>
           </div>
           <div className={'col-2'}>
             People:
+            <div>
+              <FloatingActionButton
+                mini={true}
+                className={'m-2'}
+                onClick={() => this.handlePeople()}
+              >
+                <ContentAdd />
+              </FloatingActionButton>
+            </div>
+            <Sidebar events={this.state.people}
+                     onClickEvent={this.handlePeople}
+            />
           </div>
         </div>
       )
